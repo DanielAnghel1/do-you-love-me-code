@@ -5,13 +5,38 @@ const heartLoader = document.querySelector(".cssload-main");
 const yesBtn = document.querySelector(".js-yes-btn");
 const noBtn = document.querySelector(".js-no-btn");
 
-// /change the postion of no button
-noBtn.addEventListener("mouseover", () => {
-  const newX = Math.floor(Math.random() * questionContainer.offsetWidth);
-  const newY = Math.floor(Math.random() * questionContainer.offsetWidth);
+function moveNoButton() {
+    const maxX = questionContainer.offsetWidth - noBtn.offsetWidth;
+    const maxY = questionContainer.offsetHeight - noBtn.offsetHeight;
 
-  noBtn.style.left = `${newX}px`;
-  noBtn.style.top = `${newY}px`;
+    const newX = Math.random() * maxX;
+    const newY = Math.random() * maxY;
+
+    noBtn.style.left = `${newX}px`;
+    noBtn.style.top = `${newY}px`;
+}
+
+// Desktop: when mouse approaches
+noBtn.addEventListener("mouseover", moveNoButton);
+
+// Mobile: when user tries to touch it
+noBtn.addEventListener("touchstart", (e) => {
+    e.preventDefault(); // stops actual click
+    moveNoButton();
+});
+
+
+questionContainer.addEventListener("touchmove", (e) => {
+    const touch = e.touches[0];
+    const rect = noBtn.getBoundingClientRect();
+
+    const dx = touch.clientX - rect.left;
+    const dy = touch.clientY - rect.top;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance < 80) { // pixels
+        moveNoButton();
+    }
 });
 
 // yes button functionality
